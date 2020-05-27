@@ -8,9 +8,7 @@ extern crate stm32f1xx_hal as hal;
 
 use core::cmp::min;
 use core::fmt;
-use core::fmt::Write;
 
-use cortex_m_semihosting::hio;
 use embedded_graphics::fonts::Font8x16;
 use embedded_graphics::{
     fonts::Text, pixelcolor::BinaryColor, prelude::*, style::TextStyleBuilder,
@@ -44,9 +42,6 @@ fn main() -> ! {
         .pclk1(36.mhz()) // APB1 低速外设总线
         .pclk2(72.mhz()) // APB2 高速外设总线
         .freeze(&mut flash.acr); // 应用时钟配置
-
-    let mut stdout = hio::hstdout().unwrap();
-    write!(stdout, "Rust on embedded is 1!\n").unwrap();
 
     let mut delay = Delay::new(cp.SYST, clocks);
 
@@ -82,7 +77,6 @@ fn main() -> ! {
 
     let wire = gpiob.pb9.into_open_drain_output(&mut gpiob.crh);
     let mut pin = OneWirePin { pin: wire };
-
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
     loop {
         delay.delay_ms(500 as u16);
