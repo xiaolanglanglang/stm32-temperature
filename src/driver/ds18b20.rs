@@ -4,11 +4,12 @@ use embedded_hal::digital::v2::{InputPin, OutputPin};
 use crate::protocol::one_wire::OneWirePin;
 
 pub struct Ds18b20<P> {
-    pin: OneWirePin<P>
+    pin: OneWirePin<P>,
 }
 
 impl<'a, P, E> Ds18b20<P>
-    where P: OutputPin<Error=E> + InputPin<Error=E>,
+where
+    P: OutputPin<Error = E> + InputPin<Error = E>,
 {
     pub fn new(raw_pin: P) -> Ds18b20<P> {
         let one_wire_pin = OneWirePin::new(raw_pin);

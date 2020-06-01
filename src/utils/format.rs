@@ -16,7 +16,7 @@ impl<'a> Formatter<'a> {
             return Err(fmt::Error);
         }
         use core::str::from_utf8;
-        from_utf8(&self.buffer[..self.index]).map_err(|_e| { fmt::Error })
+        from_utf8(&self.buffer[..self.index]).map_err(|_e| fmt::Error)
     }
 }
 

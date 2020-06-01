@@ -6,7 +6,8 @@ pub(crate) struct OneWirePin<P> {
 }
 
 impl<'a, P, E> OneWirePin<P>
-    where P: OutputPin<Error=E> + InputPin<Error=E>,
+where
+    P: OutputPin<Error = E> + InputPin<Error = E>,
 {
     pub fn new(pin: P) -> OneWirePin<P> {
         OneWirePin { pin }
@@ -22,7 +23,11 @@ impl<'a, P, E> OneWirePin<P>
         result
     }
 
-    pub fn write_byte_array(&mut self, data: &[u8], delay: &mut impl DelayUs<u16>) -> Result<(), E> {
+    pub fn write_byte_array(
+        &mut self,
+        data: &[u8],
+        delay: &mut impl DelayUs<u16>,
+    ) -> Result<(), E> {
         for byte in data {
             self.write_byte(*byte, delay)?;
         }
@@ -47,7 +52,11 @@ impl<'a, P, E> OneWirePin<P>
         Ok(())
     }
 
-    pub fn read_byte_array(&mut self, buffer: &mut [u8], delay: &mut impl DelayUs<u16>) -> Result<(), E> {
+    pub fn read_byte_array(
+        &mut self,
+        buffer: &mut [u8],
+        delay: &mut impl DelayUs<u16>,
+    ) -> Result<(), E> {
         for i in 0..buffer.len() {
             buffer[i] = self.read_byte(delay)?;
         }
