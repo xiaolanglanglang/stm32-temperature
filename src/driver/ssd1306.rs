@@ -1,5 +1,6 @@
 use embedded_graphics::{
-    fonts::Font8x16, fonts::Text, pixelcolor::BinaryColor, prelude::*, style::TextStyleBuilder,
+    fonts::Font8x16, fonts::Text, pixelcolor::BinaryColor, prelude::*, style::TextStyle,
+    style::TextStyleBuilder,
 };
 use ssd1306::{prelude::*, Builder};
 use stm32f1xx_hal::{
@@ -11,6 +12,7 @@ use stm32f1xx_hal::{
 
 pub struct Ssd1306<PINS> {
     display: GraphicsMode<I2cInterface<BlockingI2c<I2C1, PINS>>>,
+    text_style: TextStyle<BinaryColor, Font8x16>,
 }
 
 impl<PINS> Ssd1306<PINS>
@@ -39,21 +41,24 @@ where
             1000,
             1000,
         );
-        let mut disp: GraphicsMode<_> = Builder::new()
+        let mut display: GraphicsMode<_> = Builder::new()
             .size(DisplaySize::Display128x32)
             .connect_i2c(i2c)
             .into();
-        disp.init().unwrap();
-        Ssd1306 { display: disp }
-    }
-
-    pub fn show(&mut self, display_str: &str) {
+        display.init().unwrap();
         let text_style = TextStyleBuilder::new(Font8x16)
             .text_color(BinaryColor::On)
             .build();
+        Ssd1306 {
+            display,
+            text_style,
+        }
+    }
+
+    pub fn show(&mut self, display_str: &str) {
         self.display.clear();
         Text::new(&display_str, Point::zero())
-            .into_styled(text_style)
+            .into_styled(self.text_style)
             .draw(&mut self.display)
             .unwrap();
         self.display.flush().unwrap();
