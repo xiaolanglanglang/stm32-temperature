@@ -45,7 +45,7 @@ fn handle() -> ! {
     let mut afio = dp.AFIO.constrain(&mut rcc.apb2);
     let mut display =
         driver::Ssd1306::i2c1(dp.I2C1, &mut afio.mapr, &mut rcc.apb1, clocks, (scl, sda));
-
+    display.wait_init(&mut delay);
     let wire = gpiob.pb9.into_open_drain_output(&mut gpiob.crh);
     let mut ds18b20 = driver::Ds18b20::new(wire);
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);

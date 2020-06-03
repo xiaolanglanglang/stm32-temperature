@@ -2,6 +2,7 @@ use embedded_graphics::{
     fonts::Font8x16, fonts::Text, pixelcolor::BinaryColor, prelude::*, style::TextStyle,
     style::TextStyleBuilder,
 };
+use embedded_hal::blocking::delay::DelayMs;
 use ssd1306::{prelude::*, Builder};
 use stm32f1xx_hal::{
     i2c::{BlockingI2c, DutyCycle, Mode, Pins},
@@ -41,11 +42,10 @@ where
             1000,
             1000,
         );
-        let mut display: GraphicsMode<_> = Builder::new()
+        let display: GraphicsMode<_> = Builder::new()
             .size(DisplaySize::Display128x32)
             .connect_i2c(i2c)
             .into();
-        display.init().unwrap();
         let text_style = TextStyleBuilder::new(Font8x16)
             .text_color(BinaryColor::On)
             .build();
@@ -53,6 +53,11 @@ where
             display,
             text_style,
         }
+    }
+
+    pub fn wait_init(&mut self, delay: &mut impl DelayMs<u16>) {
+        delay.delay_ms(50);
+        self.display.init().unwrap();
     }
 
     pub fn show(&mut self, display_str: &str) {
