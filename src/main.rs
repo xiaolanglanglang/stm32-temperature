@@ -56,6 +56,9 @@ fn handle() -> ! {
         delay.delay_ms(500 as u16);
         led.set_low().unwrap();
         let temperature = ds18b20.read_temperature(&mut delay).unwrap();
+        if temperature == 85.0 {
+            continue;
+        }
         let mut buf = [0u8; 64];
         let display_str: &str = format_buffer!(&mut buf, "temperature:\n {}", temperature).unwrap();
         display.show(display_str);
